@@ -1,5 +1,7 @@
 import pickle
 import random
+from line import line
+from curve import curve
 
 def factor(n):
     if n in [-1, 0, 1]: return []
@@ -14,6 +16,12 @@ def factor(n):
         F.append((p,e))
     F.sort()
     return F
+
+def runProb(pSucc):
+    r = random.random()
+    if (r <= pSucc):
+        return True
+    return False
 
 def trial_division(n, bound=None):
     if n == 1: return 1
@@ -38,6 +46,65 @@ def searchOrdered(l, v):
             return False
         i += 1
     return False
+
+def pointArrayToXY(pArr):
+    x = []
+    y = []
+    for p in pArr:
+        x.append(p[0])
+        y.append(p[1])
+    return (x,y)
+
+def nextIntersection(p0, slope, dim):
+    x0 = p0[0]
+    y0 = p0[1]
+    dx = (dim - y0)/slope + x0
+    dy = slope * (dim - x0) + y0
+    if (dx < dy):
+        return (dx, dim)
+    elif(dy < dx):
+        return (dim, dy)
+    else:
+        return (dim, dim)
+
+def nextPoint(p0, slope, dim):
+    if (p0[0] == dim and p0[1] == dim):
+        return (0,0)
+    elif (p0[0] == dim):
+        return (0, p0[1])
+    elif (p0[1] == dim):
+        return (p0[0], 0)
+    else:
+        return nextIntersection(p0, slope, dim)
+
+
+def loop(p0, slope, dim, numLines):
+    iter = 2 * numLines - 1
+    l = []
+    i = 0
+    p1 = nextPoint(p0, slope, dim)
+    l.append(line())
+    l[0].setP(p0, p1)
+    while (i < iter - 1):
+        p1 = nextPoint(p1, slope, dim)
+        if (p1[0] == dim or p1[1] == dim):
+            l[len(l) - 1].setP1(p1)
+        if (i % 2 == 0):
+            l.append(line())
+            l[len(l) - 1].setP0(p1)
+        i += 1
+    '''
+    plt.axis([0, dim, 0, dim])
+    for j in l:
+        coords = j.getCoordArrays()
+        x = coords[0]
+        y = coords[1]
+        plt.plot(x,y, linewidth = 0.5)
+    plt.show()
+    '''
+    c = curve(slope)
+    c.addLines(l)
+    return c
 
 def isPrime(n):
     factors = factor(n)
