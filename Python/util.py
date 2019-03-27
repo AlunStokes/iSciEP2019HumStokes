@@ -93,18 +93,12 @@ def loop(p0, slope, dim, numLines):
             l.append(line())
             l[len(l) - 1].setP0(p1)
         i += 1
-    '''
-    plt.axis([0, dim, 0, dim])
-    for j in l:
-        coords = j.getCoordArrays()
-        x = coords[0]
-        y = coords[1]
-        plt.plot(x,y, linewidth = 0.5)
-    plt.show()
-    '''
-    c = curve(slope)
+    c = curve(slope, dim, numLines)
     c.addLines(l)
     return c
+
+def generateCurve(p0, slope, dim, numLines):
+    return loop(p0, slope, dim, numLines)
 
 def isPrime(n):
     factors = factor(n)
@@ -230,3 +224,17 @@ def saveFibUpTo(n, file):
     f = open(file, "wb")
     farr = fib(n)
     pickle.dump(farr, f)
+
+def randPrime(lBound, uBound):
+    n = random.randint(lBound, uBound)
+    while(not isPrime(n)):
+        n = random.randint(lBound, uBound)
+    return n
+
+def randPrimes(lBound, uBound, num):
+    l = []
+    i = 0
+    while (i < num):
+        l.append(randPrime(lBound, uBound))
+        i += 1
+    return l

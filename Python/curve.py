@@ -1,14 +1,15 @@
 import numpy as np
 class curve:
-    def __init__(self, slope):
+    def __init__(self, slope, dim, numLines):
         self.lines = []
         self.slope = slope
+        self.dim = dim
+        self.numLines = numLines
     def addLines(self, lines):
-        self.lines = lines
+        for i in lines:
+            self.lines.append(i)
     def addLine(self, line):
         self.lines.append(line)
-    def getLines(self):
-        return self.lines
     def nextPoint(self, lineIndex, p0, initialOffset = 0):
         line = self.lines[lineIndex]
         d = self.distanceBetweenPoints(p0, line.getP1())
